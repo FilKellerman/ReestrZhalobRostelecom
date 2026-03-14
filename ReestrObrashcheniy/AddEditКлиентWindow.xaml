@@ -1,0 +1,123 @@
+﻿<Window x:Class="ReestrObrashcheniy.AddEditКлиентWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Добавить / Редактировать клиента" 
+        Height="420" Width="480"
+        WindowStartupLocation="CenterOwner" 
+        ResizeMode="NoResize"
+        Background="#F5F7FA"
+        FontFamily="Segoe UI">
+
+    <Window.Resources>
+        <!-- Стили Ростелекома -->
+        <SolidColorBrush x:Key="RostelecomBlue" Color="#0055A5"/>
+        <SolidColorBrush x:Key="RostelecomOrange" Color="#FF6600"/>
+        <SolidColorBrush x:Key="RostelecomOrangeHover" Color="#FF8533"/>
+        <SolidColorBrush x:Key="TextGray" Color="#333333"/>
+        <SolidColorBrush x:Key="BorderGray" Color="#D0D7E0"/>
+
+        <!-- Стиль для TextBox -->
+        <Style x:Key="RtlTextBox" TargetType="TextBox">
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderGray}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource RostelecomBlue}"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль для Button -->
+        <Style x:Key="RtlButton" TargetType="Button">
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="MinWidth" Value="100"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="6"
+                                BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background" Value="{StaticResource RostelecomOrange}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource RostelecomOrangeHover}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#E65C00"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль для основной кнопки "Сохранить" -->
+        <Style x:Key="RtlPrimaryButton" BasedOn="{StaticResource RtlButton}" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource RostelecomBlue}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#0066C2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль для TextBlock -->
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource TextGray}"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="0,0,0,-24">
+        <!-- Заголовок -->
+        <Border Background="{StaticResource RostelecomBlue}" Height="50" VerticalAlignment="Top">
+            <TextBlock Text="Добавить / Редактировать клиента"
+                       Foreground="White"
+                       FontSize="18"
+                       FontWeight="SemiBold"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"/>
+        </Border>
+
+        <!-- Основное содержимое -->
+        <Grid Margin="20,50,20,30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="ФИО:"/>
+            <TextBox x:Name="txtФИО" Grid.Row="1" Style="{StaticResource RtlTextBox}" />
+
+            <TextBlock Grid.Row="2" Text="Адрес:"/>
+            <TextBox x:Name="txtАдрес" Grid.Row="3" Style="{StaticResource RtlTextBox}" AcceptsReturn="True" TextWrapping="Wrap" Height="80"/>
+
+            <TextBlock Grid.Row="4" Text="Телефон:" Margin="0,10,0,6"/>
+            <TextBox x:Name="txtТелефон" Grid.Row="4" Style="{StaticResource RtlTextBox}" Margin="0,37,0,23" />
+
+            <!-- Кнопки -->
+            <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                <Button Content="Отмена" Style="{StaticResource RtlButton}" Background="#6C757D" Click="BtnCancel_Click"/>
+                <Button Content="Сохранить" Style="{StaticResource RtlPrimaryButton}" Margin="15,0,0,0" Click="BtnSave_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

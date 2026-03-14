@@ -1,0 +1,111 @@
+﻿<Window x:Class="ReestrObrashcheniy.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Вход в систему" 
+        Height="380" Width="420"
+        WindowStartupLocation="CenterScreen" 
+        ResizeMode="NoResize"
+        Background="#F5F7FA"
+        FontFamily="Segoe UI">
+
+    <Window.Resources>
+        <!-- Фирменные цвета Ростелекома -->
+        <SolidColorBrush x:Key="RostelecomBlue" Color="#0055A5"/>
+        <SolidColorBrush x:Key="RostelecomBlueHover" Color="#0066C2"/>
+        <SolidColorBrush x:Key="GrayDark" Color="#333333"/>
+        <SolidColorBrush x:Key="GrayLight" Color="#D0D7E0"/>
+        <SolidColorBrush x:Key="ErrorRed" Color="#E74C3C"/>
+
+        <!-- Стиль TextBox / PasswordBox -->
+        <Style x:Key="RtlInput" TargetType="Control">
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="BorderBrush" Value="{StaticResource GrayLight}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource RostelecomBlue}"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль кнопки "Войти" -->
+        <Style x:Key="RtlLoginButton" TargetType="Button">
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="{StaticResource RostelecomBlue}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="8"
+                                BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource RostelecomBlueHover}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#004488"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль TextBlock -->
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource GrayDark}"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <!-- Заголовок -->
+        <Border Background="{StaticResource RostelecomBlue}" Height="60" VerticalAlignment="Top">
+            <TextBlock Text="Вход в систему"
+                       Foreground="White"
+                       FontSize="22"
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"/>
+        </Border>
+
+        <!-- Основное содержимое -->
+        <Grid Margin="40,80,40,40">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="Логин" Margin="0,0,0,5"/>
+            <TextBox x:Name="txtLogin" Grid.Row="1" Style="{StaticResource RtlInput}" />
+
+            <TextBlock Grid.Row="2" Text="Пароль" Margin="0,0,0,5"/>
+            <PasswordBox x:Name="txtPassword" Grid.Row="3" Style="{StaticResource RtlInput}" />
+
+            <!-- Кнопка "Войти" -->
+            <Button Grid.Row="4" Content="Войти" Style="{StaticResource RtlLoginButton}" 
+                    Margin="0,20,0,0" Click="BtnLogin_Click"/>
+
+            <!-- Ошибка -->
+            <TextBlock x:Name="txtError" Grid.Row="5" Text="" Foreground="{StaticResource ErrorRed}" 
+                       FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap" 
+                       HorizontalAlignment="Center" Margin="0,-10,0,0"/>
+        </Grid>
+    </Grid>
+</Window>
