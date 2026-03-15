@@ -137,6 +137,7 @@
     <Compile Include="ChangeStatusWindow.xaml.cs">
       <DependentUpon>ChangeStatusWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CsvExporter.cs" />
     <Compile Include="DbHelper.cs" />
     <Compile Include="DeleteConfirmWindow.xaml.cs">
       <DependentUpon>DeleteConfirmWindow.xaml</DependentUpon>
@@ -144,6 +145,10 @@
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SearchDialogWindow.xaml.xaml.cs">
+      <DependentUpon>SearchDialogWindow.xaml.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TipManager.cs" />
     <Compile Include="РеестрОбращенийDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -189,6 +194,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SearchDialogWindow.xaml.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

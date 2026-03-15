@@ -178,6 +178,7 @@
                         <Button x:Name="BtnAddОтвет" Content="Добавить ответ" Style="{StaticResource RtlButton}" Margin="10,0,0,0" Click="BtnAddОтвет_Click"/>
                         <Button Content="Экспорт в CSV" Style="{StaticResource RtlButton}" Margin="10,0,0,0" Click="BtnExportCSVWithSaveDialog_Click"/>
                         <Button Content="Подсказка" Style="{StaticResource RtlButton}" Margin="10,0,0,0" Click="BtnПодсказка_Click"/>
+                        <Button Content="Поиск" Style="{StaticResource RtlButton}" Width="100" Margin="10,0,0,0" Click="BtnПоиск_Click"/>
                     </StackPanel>
                 </Grid>
             </TabItem>

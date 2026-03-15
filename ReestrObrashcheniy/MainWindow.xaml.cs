@@ -44,9 +44,10 @@ namespace ReestrObrashcheniy
                 tabОтветы.Visibility = Visibility.Visible;
             }
 
-            if (new Random().Next(0, 3) == 0) // 1 шанс из 3
+            if (new Random().Next(0, 3) == 0)
             {
-                BtnПодсказка_Click(null, null); // покажет случайную подсказку
+                string подсказка = TipManager.ПолучитьСлучайнуюПодсказку();
+                MessageBox.Show(подсказка, "Полезная подсказка", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
             // Загружаем данные
@@ -631,86 +632,53 @@ namespace ReestrObrashcheniy
 
         private void BtnExportCSVWithSaveDialog_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                DataTable dt = DbHelper.GetОбращения(CurrentRole == "Оператор" ? CurrentUserLogin : null);
-
-                if (dt.Rows.Count == 0)
-                {
-                    MessageBox.Show("Нет данных для экспорта!");
-                    return;
-                }
-
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.Filter = "CSV файлы (*.csv)|*.csv|Все файлы (*.*)|*.*";
-                saveFileDialog.Title = "Сохранить экспорт обращений";
-                saveFileDialog.FileName = $"Обращения_{DateTime.Now:yyyy-MM-dd_HH-mm}.csv";
-                saveFileDialog.DefaultExt = "csv";
-                saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-                bool? result = saveFileDialog.ShowDialog();
-
-                if (result == true)
-                {
-                    // Пользователь выбрал файл и нажал "Сохранить"
-                    string filePath = saveFileDialog.FileName;
-
-                    using (StreamWriter sw = new StreamWriter(filePath, false, System.Text.Encoding.UTF8))
-                    {
-                        // Заголовки
-                        for (int col = 0; col < dt.Columns.Count; col++)
-                        {
-                            sw.Write($"\"{dt.Columns[col].ColumnName}\"");
-                            if (col < dt.Columns.Count - 1) sw.Write(",");
-                        }
-                        sw.WriteLine();
-
-                        // Данные
-                        foreach (DataRow row in dt.Rows)
-                        {
-                            for (int col = 0; col < dt.Columns.Count; col++)
-                            {
-                                string value = row[col]?.ToString() ?? "";
-                                value = value.Replace("\"", "\"\"");
-                                sw.Write($"\"{value}\"");
-                                if (col < dt.Columns.Count - 1) sw.Write(",");
-                            }
-                            sw.WriteLine();
-                        }
-                    }
-
-                    MessageBox.Show($"Файл успешно сохранён:\n{filePath}\n\nОткройте в Excel!");
-                }
-                else
-                {
-                    // Пользователь нажал "Отмена" или закрыл диалог
-                    MessageBox.Show("Действие отменено.", "Отмена", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Ошибка экспорта:\n" + ex.Message);
-            }
+            DataTable dt = DbHelper.GetОбращения(CurrentRole == "Оператор" ? CurrentUserLogin : null);
+            CsvExporter.ЭкспортВCSV(dt, $"Обращения_{DateTime.Now:yyyy-MM-dd_HH-mm}.csv");
         }
 
         private void BtnПодсказка_Click(object sender, RoutedEventArgs e)
         {
-            string[] подсказки = new string[]
+            string подсказка = TipManager.ПолучитьСлучайнуюПодсказку();
+            MessageBox.Show(подсказка, "Полезная подсказка", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void BtnПоиск_Click(object sender, RoutedEventArgs e)
+        {
+            try
             {
-        "Не забудьте указать точное описание проблемы — это ускорит обработку!",
-        "Если клиент звонит повторно — проверьте статус в системе перед разговором.",
-        "Статус 'На уточнении' используйте, когда нужны дополнительные данные от клиента.",
-        "Прикрепляйте фото/скриншоты в описание — это помогает техникам.",
-        "Не удаляйте старые обращения — они нужны для статистики.",
-        "Используйте внутренние комментарии для заметок коллегам.",
-        "Проверяйте назначенного сотрудника — он отвечает за обращение.",
-        "Экспортируйте данные в Excel, если нужно отчитаться руководству."
-            };
+                SearchDialogWindow search = new SearchDialogWindow();
+                if (search.ShowDialog() == true)
+                {
+                    string filter = "";
 
-            Random rand = new Random();
-            string случайная = подсказки[rand.Next(подсказки.Length)];
+                    if (!string.IsNullOrEmpty(search.КритерийОписания))
+                        filter += $"Описание LIKE '%{search.КритерийОписания}%'";
 
-            MessageBox.Show(случайная, "Полезная подсказка", MessageBoxButton.OK, MessageBoxImage.Information);
+                    if (!string.IsNullOrEmpty(search.КритерийФИО))
+                    {
+                        if (!string.IsNullOrEmpty(filter)) filter += " AND ";
+                        filter += $"Клиент_ФИО LIKE '%{search.КритерийФИО}%'";
+                    }
+
+                    if (search.КритерийСтатус != "Все")
+                    {
+                        if (!string.IsNullOrEmpty(filter)) filter += " AND ";
+                        filter += $"Статус = '{search.КритерийСтатус}'";
+                    }
+
+                    DataTable dt = DbHelper.GetОбращения(CurrentRole == "Оператор" ? CurrentUserLogin : null);
+                    DataView dv = dt.DefaultView;
+
+                    if (!string.IsNullOrEmpty(filter))
+                        dv.RowFilter = filter;
+
+                    dgОбращения.ItemsSource = dv;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка поиска: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }
