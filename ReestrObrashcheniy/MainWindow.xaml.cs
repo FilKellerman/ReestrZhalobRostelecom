@@ -7,6 +7,7 @@ using OfficeOpenXml;
 using System.IO;
 using System.ComponentModel;
 using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace ReestrObrashcheniy
 {
@@ -20,11 +21,20 @@ namespace ReestrObrashcheniy
         {
             InitializeComponent();
             Loaded += MainWindow_Loaded;
+            ConfigManager.ApplySettings(this);
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            txtПриветствие.Text = $"Добро пожаловать, {CurrentUserFIO} ({CurrentRole})";
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();   // ← начинаем замер
+
+            // Устанавливаем текущего пользователя
+            CurrentUser.SetUser(CurrentUserLogin, CurrentUserFIO, CurrentRole);
+
+            Logger.Info("App", "Application started");
+            Logger.Info("Security", $"User {CurrentUser.Login} ({CurrentUser.Role}) logged in");
+
+            txtПриветствие.Text = $"Добро пожаловать, {CurrentUser.FIO} ({CurrentUser.Role})";
 
             if (CurrentRole == "Оператор")
             {
@@ -33,21 +43,13 @@ namespace ReestrObrashcheniy
                 tabОтветы.Visibility = Visibility.Collapsed;
                 BtnChangeStatus.Visibility = Visibility.Collapsed;
                 BtnAddОтвет.Visibility = Visibility.Collapsed;
-
             }
-            else // Администратор
+            else
             {
-                // Всё видно
                 tabОбращения.Visibility = Visibility.Visible;
                 tabКлиенты.Visibility = Visibility.Visible;
                 tabСотрудники.Visibility = Visibility.Visible;
                 tabОтветы.Visibility = Visibility.Visible;
-            }
-
-            if (new Random().Next(0, 3) == 0)
-            {
-                string подсказка = TipManager.ПолучитьСлучайнуюПодсказку();
-                MessageBox.Show(подсказка, "Полезная подсказка", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
             // Загружаем данные
@@ -55,10 +57,18 @@ namespace ReestrObrashcheniy
             LoadКлиенты();
             LoadСотрудники();
             LoadОтветы();
+
+            stopwatch.Stop();
+            long loadTimeMs = stopwatch.ElapsedMilliseconds;
+
+            Logger.Info("Performance", $"MainWindow fully loaded in {loadTimeMs} ms");
+            // Можно показать пользователю (по желанию):
+            // MessageBox.Show($"Программа загружена за {loadTimeMs} мс", "Производительность");
         }
 
         private void BtnExit_Click(object sender, RoutedEventArgs e)
         {
+            Logger.Info("App", $"Application closed by user: {CurrentUserLogin}");
             Application.Current.Shutdown();
         }
 
@@ -678,6 +688,99 @@ namespace ReestrObrashcheniy
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка поиска: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void BtnSettings_Click(object sender, RoutedEventArgs e)
+        {
+            var settingsWindow = new SettingsWindow();
+            if (settingsWindow.ShowDialog() == true)
+            {
+                MessageBox.Show("Настройки успешно сохранены!\n\n" +
+                                "Некоторые изменения (шрифт, масштаб) применятся после перезапуска программы.",
+                                "Настройки",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Information);
+            }
+        }
+
+        private void BtnCreateBackup_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                progressBackup.Visibility = Visibility.Visible;
+                progressBackup.IsIndeterminate = true;
+                txtBackupStatus.Text = "Создание резервной копии...";
+                btnCreateBackup.IsEnabled = false;
+                btnRestoreBackup.IsEnabled = false;
+
+                string backupPath = BackupManager.CreateBackup();
+
+                txtBackupStatus.Text = $"Бэкап создан: {System.IO.Path.GetFileName(backupPath)}";
+            }
+            catch (Exception ex)
+            {
+                txtBackupStatus.Text = $"Ошибка: {ex.Message}";
+                MessageBox.Show($"Ошибка создания бэкапа:\n{ex.Message}", "Ошибка",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                progressBackup.Visibility = Visibility.Collapsed;
+                btnCreateBackup.IsEnabled = true;
+                btnRestoreBackup.IsEnabled = true;
+            }
+        }
+
+        private void BtnRestoreBackup_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog
+            {
+                Title = "Выберите файл резервной копии",
+                Filter = "Файлы бэкапа (*.bak)|*.bak|Все файлы (*.*)|*.*",
+                InitialDirectory = BackupManager.BackupDir
+            };
+
+            if (dlg.ShowDialog() != true)
+                return;
+
+            if (MessageBox.Show("Восстановление заменит текущие данные!\n\nПродолжить?",
+                "Предупреждение", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                return;
+
+            try
+            {
+                progressBackup.Visibility = Visibility.Visible;
+                progressBackup.IsIndeterminate = true;
+                txtBackupStatus.Text = "Восстановление базы данных...";
+                btnCreateBackup.IsEnabled = false;
+                btnRestoreBackup.IsEnabled = false;
+
+                bool success = BackupManager.RestoreBackup(dlg.FileName);
+
+                if (success)
+                {
+                    txtBackupStatus.Text = "Восстановление завершено.";
+
+                    MessageBox.Show("База данных успешно восстановлена!\n\n" +
+                                    "Приложение будет закрыто для применения изменений.",
+                                    "Готово", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    // Безопасное завершение приложения
+                    System.Windows.Application.Current?.Shutdown();
+                }
+            }
+            catch (Exception ex)
+            {
+                txtBackupStatus.Text = $"Ошибка: {ex.Message}";
+                MessageBox.Show($"Ошибка восстановления:\n{ex.Message}", "Ошибка",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                progressBackup.Visibility = Visibility.Collapsed;
+                btnCreateBackup.IsEnabled = true;
+                btnRestoreBackup.IsEnabled = true;
             }
         }
     }

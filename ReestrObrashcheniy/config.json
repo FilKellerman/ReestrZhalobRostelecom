@@ -1,0 +1,16 @@
+{
+  "interface": {
+    "theme": "dark",
+    "scale": 100,
+    "font_family": "Arial"
+  },
+  "backup": {
+    "auto_backup": true,
+    "backup_interval_days": 7
+  },
+  "features": {
+    "tips_enabled": true,
+    "sound_enabled": false,
+    "hotkeys_enabled": true
+  }
+}

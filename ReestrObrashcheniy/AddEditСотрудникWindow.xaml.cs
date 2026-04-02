@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Windows;
 
 namespace ReestrObrashcheniy
@@ -13,11 +14,17 @@ namespace ReestrObrashcheniy
         {
             InitializeComponent();
             editID = id;
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+            ConfigManager.ApplySettings(this);  // ✅
+            if (id.HasValue) LoadДляРедактирования(id.Value);
 
             if (id.HasValue)
             {
                 LoadДляРедактирования(id.Value);
             }
+
+            stopwatch.Stop();
         }
 
         private void LoadДляРедактирования(int id)
@@ -64,12 +71,16 @@ namespace ReestrObrashcheniy
                     }
                 }
 
+                string action = editID.HasValue ? "Updated record" : "Added record";
+                Logger.Audit(CurrentUser.Login, action, $"Table: Сотрудники | ФИО: {txtФИО.Text}");
+
                 MessageBox.Show("Сотрудник сохранён!");
                 DialogResult = true;
                 Close();
             }
             catch (Exception ex)
             {
+                Logger.Error("UI", "Error saving Сотрудник", ex);
                 MessageBox.Show("Ошибка сохранения:\n" + ex.Message);
             }
         }

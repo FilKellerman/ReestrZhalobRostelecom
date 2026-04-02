@@ -15,11 +15,16 @@ namespace ReestrObrashcheniy
             НазначениеID = назначениеID;
             editID = ответID;
             txtОбращениеID.Text = "Обращение связано с назначением #" + назначениеID;
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+            ConfigManager.ApplySettings(this);  // ✅
 
             if (ответID.HasValue)
             {
                 LoadДляРедактирования(ответID.Value);
             }
+
+            stopwatch.Stop();
         }
 
         private void LoadДляРедактирования(int id)
@@ -61,12 +66,16 @@ namespace ReestrObrashcheniy
                     }
                 }
 
+                Logger.Audit(CurrentUser.Login, "Added record",
+                     $"Table: Ответы | Обращение_ID: {txtОбращениеID}");
+
                 MessageBox.Show("Ответ сохранён!");
                 DialogResult = true;
                 Close();
             }
             catch (Exception ex)
             {
+                Logger.Error("UI", "Error saving Ответ", ex);
                 MessageBox.Show("Ошибка сохранения:\n" + ex.Message);
             }
         }

@@ -4,9 +4,7 @@
         Title="Добавить / Редактировать сотрудника" 
         Height="420" Width="520"
         WindowStartupLocation="CenterOwner" 
-        ResizeMode="NoResize"
-        Background="#F5F7FA"
-        FontFamily="Segoe UI">
+        ResizeMode="NoResize">
 
     <Window.Resources>
         <!-- Фирменные цвета Ростелекома -->

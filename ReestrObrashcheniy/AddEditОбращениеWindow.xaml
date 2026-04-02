@@ -4,9 +4,7 @@
         Title="Добавить / Редактировать обращение" 
         Height="480" Width="580"
         WindowStartupLocation="CenterOwner" 
-        ResizeMode="NoResize"
-        Background="#F5F7FA"
-        FontFamily="Segoe UI">
+        ResizeMode="NoResize">
 
     <Window.Resources>
         <!-- Фирменные цвета Ростелекома -->

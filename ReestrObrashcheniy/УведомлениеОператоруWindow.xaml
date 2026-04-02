@@ -4,9 +4,7 @@
         Title="Уведомление оператору" 
         Height="378" Width="480"
         WindowStartupLocation="CenterOwner" 
-        ResizeMode="NoResize"
-        Background="#F5F7FA"
-        FontFamily="Segoe UI">
+        ResizeMode="NoResize">
 
     <Window.Resources>
         <!-- Фирменные цвета Ростелекома -->

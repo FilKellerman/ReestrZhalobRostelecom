@@ -4,19 +4,15 @@
         Title="Вход в систему" 
         Height="380" Width="420"
         WindowStartupLocation="CenterScreen" 
-        ResizeMode="NoResize"
-        Background="#F5F7FA"
-        FontFamily="Segoe UI">
+        ResizeMode="NoResize">
 
     <Window.Resources>
-        <!-- Фирменные цвета Ростелекома -->
         <SolidColorBrush x:Key="RostelecomBlue" Color="#0055A5"/>
         <SolidColorBrush x:Key="RostelecomBlueHover" Color="#0066C2"/>
         <SolidColorBrush x:Key="GrayDark" Color="#333333"/>
         <SolidColorBrush x:Key="GrayLight" Color="#D0D7E0"/>
         <SolidColorBrush x:Key="ErrorRed" Color="#E74C3C"/>
 
-        <!-- Стиль TextBox / PasswordBox -->
         <Style x:Key="RtlInput" TargetType="Control">
             <Setter Property="Padding" Value="10,6"/>
             <Setter Property="BorderBrush" Value="{StaticResource GrayLight}"/>
@@ -33,7 +29,6 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Стиль кнопки "Войти" -->
         <Style x:Key="RtlLoginButton" TargetType="Button">
             <Setter Property="Padding" Value="20,12"/>
             <Setter Property="FontSize" Value="16"/>
@@ -63,16 +58,14 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Стиль TextBlock -->
+        <!-- Удалён атрибут Foreground -->
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Foreground" Value="{StaticResource GrayDark}"/>
             <Setter Property="Margin" Value="0,0,0,6"/>
         </Style>
     </Window.Resources>
 
     <Grid>
-        <!-- Заголовок -->
         <Border Background="{StaticResource RostelecomBlue}" Height="60" VerticalAlignment="Top">
             <TextBlock Text="Вход в систему"
                        Foreground="White"
@@ -82,7 +75,6 @@
                        HorizontalAlignment="Center"/>
         </Border>
 
-        <!-- Основное содержимое -->
         <Grid Margin="40,80,40,40">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -98,11 +90,9 @@
             <TextBlock Grid.Row="2" Text="Пароль" Margin="0,0,0,5"/>
             <PasswordBox x:Name="txtPassword" Grid.Row="3" Style="{StaticResource RtlInput}" />
 
-            <!-- Кнопка "Войти" -->
             <Button Grid.Row="4" Content="Войти" Style="{StaticResource RtlLoginButton}" 
                     Margin="0,20,0,0" Click="BtnLogin_Click"/>
 
-            <!-- Ошибка -->
             <TextBlock x:Name="txtError" Grid.Row="5" Text="" Foreground="{StaticResource ErrorRed}" 
                        FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap" 
                        HorizontalAlignment="Center" Margin="0,-10,0,0"/>

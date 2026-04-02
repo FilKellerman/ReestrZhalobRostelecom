@@ -19,6 +19,10 @@ namespace ReestrObrashcheniy
             editID = id;
             isOperatorMode = operatorMode;
             currentUserLogin = userLogin;
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+            ConfigManager.ApplySettings(this);  // ✅
+            if (id.HasValue) LoadДляРедактирования(id.Value);
 
             LoadКлиенты();
 
@@ -26,6 +30,8 @@ namespace ReestrObrashcheniy
             {
                 LoadДляРедактирования(id.Value);
             }
+
+            stopwatch.Stop();
         }
 
         private void LoadКлиенты()
@@ -160,12 +166,16 @@ namespace ReestrObrashcheniy
                     }
                 }
 
+                string action = editID.HasValue ? "Updated record" : "Added record";
+                Logger.Audit(CurrentUser.Login, action, $"Table: Обращения | Клиент: {cmbКлиент.Text}");
+
                 MessageBox.Show("Обращение сохранено!");
                 DialogResult = true;
                 Close();
             }
             catch (Exception ex)
             {
+                Logger.Error("UI", "Error saving Обращение", ex);
                 MessageBox.Show("Ошибка сохранения:\n" + ex.Message);
             }
         }

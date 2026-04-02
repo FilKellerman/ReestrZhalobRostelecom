@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 
 namespace ReestrObrashcheniy
 {
@@ -10,6 +11,10 @@ namespace ReestrObrashcheniy
         public УведомлениеОператоруWindow()
         {
             InitializeComponent();
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+            ConfigManager.ApplySettings(this);
+            stopwatch.Stop();
         }
 
         private void BtnОтправить_Click(object sender, RoutedEventArgs e)

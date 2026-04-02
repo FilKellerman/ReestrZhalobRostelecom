@@ -9,6 +9,10 @@ namespace ReestrObrashcheniy
         {
             InitializeComponent();
             txtLogin.Focus();
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+            ConfigManager.ApplySettings(this);
+            stopwatch.Stop();
         }
 
         private void BtnLogin_Click(object sender, RoutedEventArgs e)
@@ -25,9 +29,12 @@ namespace ReestrObrashcheniy
             try
             {
                 var (success, role, fio) = DbHelper.Авторизоваться(login, password);
+                var result = DbHelper.Авторизоваться(txtLogin.Text, txtPassword.Password);
 
-                if (success)
+                if (result.Success)
                 {
+                    Logger.Info("Security", $"Successful login: {txtLogin.Text} ({result.Role})");
+                    CurrentUser.SetUser(txtLogin.Text, result.ФИО, result.Role);
                     MainWindow main = new MainWindow();
                     main.CurrentRole = role;
                     main.CurrentUserFIO = fio;
@@ -49,6 +56,7 @@ namespace ReestrObrashcheniy
                 }
                 else
                 {
+                    Logger.Warning("Security", $"Failed login attempt for user: {txtLogin.Text}");
                     txtError.Text = "Неверный логин или пароль!";
                 }
             }

@@ -2,7 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Реестр жалоб и обращений — Ростелеком"
-        Height="720" Width="1200"
+        Height="760" 
+        Width="1280"
         WindowStartupLocation="CenterScreen"
         Background="#F5F7FA"
         FontFamily="Segoe UI">
@@ -16,47 +17,7 @@
         <SolidColorBrush x:Key="GrayLight" Color="#D0D7E0"/>
         <SolidColorBrush x:Key="LightGray" Color="#F5F7FA"/>
 
-        <!-- Стиль TabItem -->
-        <Style TargetType="TabItem">
-            <Setter Property="Padding" Value="16,10"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="Foreground" Value="{StaticResource GrayDark}"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TabItem">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{StaticResource RostelecomBlue}"
-                                BorderThickness="0,0,0,7">
-                            <ContentPresenter ContentSource="Header"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Foreground" Value="{StaticResource RostelecomBlue}"/>
-                                <Setter Property="FontWeight" Value="SemiBold"/>
-                                <Setter Property="BorderThickness" Value="0,0,0,4"/>
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Foreground" Value="{StaticResource RostelecomBlueHover}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Стиль заголовков DataGrid -->
-        <Style TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="{StaticResource RostelecomBlue}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Padding" Value="8"/>
-            <Setter Property="BorderThickness" Value="0"/>
-        </Style>
-
-        <!-- Стиль кнопок -->
+        <!-- Стиль кнопок (оранжевый) -->
         <Style x:Key="RtlButton" TargetType="Button">
             <Setter Property="Padding" Value="16,8"/>
             <Setter Property="FontSize" Value="14"/>
@@ -67,8 +28,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" 
-                                CornerRadius="6">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
@@ -92,7 +52,6 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Background" Value="White"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Margin" Value="0,0,0,10"/>
             <Style.Triggers>
                 <Trigger Property="IsFocused" Value="True">
                     <Setter Property="BorderBrush" Value="{StaticResource RostelecomBlue}"/>
@@ -103,34 +62,65 @@
     </Window.Resources>
 
     <Grid>
-        <!-- Заголовок приложения -->
-        <Border Background="{StaticResource RostelecomBlue}" Height="60" VerticalAlignment="Top">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
-                <TextBlock Text="Реестр жалоб и обращений"
-                           Foreground="White"
-                           FontSize="22"
-                           FontWeight="Bold"
-                           VerticalAlignment="Center"/>
+        <!-- Синяя шапка -->
+        <Border Background="{StaticResource RostelecomBlue}" Height="80" VerticalAlignment="Top">
+            <Grid>
+                <!-- Название программы слева -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
+                    <TextBlock Text="Реестр жалоб и обращений"
+                               Foreground="White"
+                               FontSize="22"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Приветствие над кнопками (добавлен нижний отступ) -->
                 <TextBlock x:Name="txtПриветствие"
                            Foreground="White"
                            FontSize="16"
-                           Margin="40,0,0,0"
-                           VerticalAlignment="Center"/>
-            </StackPanel>
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Right"
+                           Margin="0,10,20,20"/>
+
+                <!-- Кнопки (увеличены отступы) -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Margin="0,0,10,10">
+
+                    <Button x:Name="btnCreateBackup"
+                            Content="Создать бэкап"
+                            Width="130" Height="34"
+                            Margin="0,0,12,0"
+                            Style="{StaticResource RtlButton}"
+                            Click="BtnCreateBackup_Click"/>
+
+                    <Button x:Name="btnRestoreBackup"
+                            Content="Восстановить"
+                            Width="130" Height="34"
+                            Margin="0,0,20,0"
+                            Style="{StaticResource RtlButton}"
+                            Click="BtnRestoreBackup_Click"/>
+
+                    <!-- Кнопка "Настройки" теперь оранжевая -->
+                    <Button Content="Настройки"
+                            Width="115" Height="34"
+                            Margin="0,0,20,0"
+                            Style="{StaticResource RtlButton}"
+                            Click="BtnSettings_Click"/>
+
+                    <Button Content="Выход"
+                            Width="100" Height="34"
+                            Style="{StaticResource RtlButton}"
+                            Click="BtnExit_Click"/>
+                </StackPanel>
+            </Grid>
         </Border>
 
-        <!-- Кнопка выхода -->
-        <Button Content="Выход"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Margin="0,12,20,0"
-                Width="100"
-                Style="{StaticResource RtlButton}"
-                Background="#FF6600"
-                Click="BtnExit_Click"/>
-
         <!-- Основной TabControl -->
-        <TabControl Margin="0,60,0,0" Background="Transparent">
+        <TabControl Margin="0,80,0,45" Background="Transparent">
+
             <!-- Вкладка Обращения -->
             <TabItem x:Name="tabОбращения" Header="Обращения">
                 <Grid Margin="20">
@@ -139,8 +129,6 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-
-                    <!-- Поиск -->
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
                         <TextBlock Text="Поиск по описанию / клиенту / статусу:"
                                    VerticalAlignment="Center"
@@ -151,8 +139,6 @@
                                  Style="{StaticResource RtlSearchTextBox}"
                                  TextChanged="TxtПоискОбращение_TextChanged"/>
                     </StackPanel>
-
-                    <!-- Таблица -->
                     <DataGrid x:Name="dgОбращения" Grid.Row="1"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
@@ -168,8 +154,6 @@
                             <DataGridTextColumn Header="Сотрудник" Binding="{Binding Сотрудник_ФИО}" Width="150"/>
                         </DataGrid.Columns>
                     </DataGrid>
-
-                    <!-- Кнопки -->
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
                         <Button Content="Добавить" Style="{StaticResource RtlButton}" Click="BtnAddОбращение_Click"/>
                         <Button Content="Редактировать" Style="{StaticResource RtlButton}" Margin="10,0,0,0" Click="BtnEditОбращение_Click"/>
@@ -178,7 +162,6 @@
                         <Button x:Name="BtnAddОтвет" Content="Добавить ответ" Style="{StaticResource RtlButton}" Margin="10,0,0,0" Click="BtnAddОтвет_Click"/>
                         <Button Content="Экспорт в CSV" Style="{StaticResource RtlButton}" Margin="10,0,0,0" Click="BtnExportCSVWithSaveDialog_Click"/>
                         <Button Content="Подсказка" Style="{StaticResource RtlButton}" Margin="10,0,0,0" Click="BtnПодсказка_Click"/>
-                        <Button Content="Поиск" Style="{StaticResource RtlButton}" Width="100" Margin="10,0,0,0" Click="BtnПоиск_Click"/>
                     </StackPanel>
                 </Grid>
             </TabItem>
@@ -191,12 +174,10 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
                         <TextBlock Text="Поиск по ФИО:" VerticalAlignment="Center" Margin="0,0,10,0" FontSize="14"/>
                         <TextBox x:Name="txtПоискКлиент" Width="300" Style="{StaticResource RtlSearchTextBox}" TextChanged="TxtПоискКлиент_TextChanged"/>
                     </StackPanel>
-
                     <DataGrid x:Name="dgКлиенты" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True"
                               AlternatingRowBackground="#E8F0FE" RowBackground="White">
                         <DataGrid.Columns>
@@ -206,7 +187,6 @@
                             <DataGridTextColumn Header="Телефон" Binding="{Binding Телефон}" Width="150"/>
                         </DataGrid.Columns>
                     </DataGrid>
-
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,15,0,0">
                         <Button Content="Добавить" Style="{StaticResource RtlButton}" Click="BtnAddКлиент_Click"/>
                         <Button Content="Редактировать" Style="{StaticResource RtlButton}" Margin="10,0,0,0" Click="BtnEditКлиент_Click"/>
@@ -223,12 +203,10 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
                         <TextBlock Text="Поиск по ФИО:" VerticalAlignment="Center" Margin="0,0,10,0" FontSize="14"/>
                         <TextBox x:Name="txtПоискСотрудник" Width="300" Style="{StaticResource RtlSearchTextBox}" TextChanged="TxtПоискСотрудник_TextChanged"/>
                     </StackPanel>
-
                     <DataGrid x:Name="dgСотрудники" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True"
                               AlternatingRowBackground="#E8F0FE" RowBackground="White">
                         <DataGrid.Columns>
@@ -239,7 +217,6 @@
                             <DataGridTextColumn Header="Телефон" Binding="{Binding Телефон}" Width="150"/>
                         </DataGrid.Columns>
                     </DataGrid>
-
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,15,0,0">
                         <Button Content="Добавить" Style="{StaticResource RtlButton}" Click="BtnAddСотрудник_Click"/>
                         <Button Content="Редактировать" Style="{StaticResource RtlButton}" Margin="10,0,0,0" Click="BtnEditСотрудник_Click"/>
@@ -256,12 +233,10 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
                         <TextBlock Text="Поиск по тексту / сотруднику:" VerticalAlignment="Center" Margin="0,0,10,0" FontSize="14"/>
                         <TextBox x:Name="txtПоискОтвет" Width="350" Style="{StaticResource RtlSearchTextBox}" TextChanged="TxtПоискОтвет_TextChanged"/>
                     </StackPanel>
-
                     <DataGrid x:Name="dgОтветы" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True"
                               AlternatingRowBackground="#E8F0FE" RowBackground="White">
                         <DataGrid.Columns>
@@ -273,9 +248,12 @@
                             <DataGridCheckBoxColumn Header="Внутренний" Binding="{Binding ЭтоВнутренний}" Width="100"/>
                         </DataGrid.Columns>
                     </DataGrid>
-
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,15,0,0">
-                        <Button Content="Добавить" Style="{StaticResource RtlButton}" Click="BtnAddОтвет_Click"/>
+                        <!-- Переименовано, чтобы избежать конфликта имён -->
+                        <Button x:Name="BtnAddОтветОтветы" 
+                                Content="Добавить" 
+                                Style="{StaticResource RtlButton}" 
+                                Click="BtnAddОтвет_Click"/>
                         <Button Content="Редактировать" Style="{StaticResource RtlButton}" Margin="10,0,0,0" Click="BtnEditОтвет_Click"/>
                         <Button Content="Удалить" Style="{StaticResource RtlButton}" Margin="10,0,0,0" Click="BtnDeleteОтвет_Click"/>
                         <Button Content="Уведомление оператору" Style="{StaticResource RtlButton}" Margin="10,0,0,0" Click="BtnУведомлениеОператору_Click"/>
@@ -283,5 +261,23 @@
                 </Grid>
             </TabItem>
         </TabControl>
+
+        <!-- Строка состояния внизу -->
+        <Border Background="#F0F0F0" BorderBrush="#D0D0D0" BorderThickness="0,1,0,0"
+                Height="45" VerticalAlignment="Bottom">
+            <Grid Margin="20,0">
+                <ProgressBar x:Name="progressBackup"
+                             Width="280" Height="20"
+                             HorizontalAlignment="Left"
+                             Visibility="Collapsed"
+                             IsIndeterminate="True"/>
+
+                <TextBlock x:Name="txtBackupStatus"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right"
+                           FontSize="13"
+                           Foreground="#555555"/>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

@@ -13,7 +13,12 @@ namespace ReestrObrashcheniy
         {
             InitializeComponent();
             ОбращениеID = id;
-            cmbСтатус.SelectedIndex = 0; // по умолчанию "Новая"
+            cmbСтатус.SelectedIndex = 0;
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+            ConfigManager.ApplySettings(this);
+
+            stopwatch.Stop();
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)

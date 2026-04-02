@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace ReestrObrashcheniy
@@ -12,7 +13,11 @@ namespace ReestrObrashcheniy
         public SearchDialogWindow()
         {
             InitializeComponent();
-            cmbСтатус.SelectedIndex = 0; // "Все" по умолчанию
+            cmbСтатус.SelectedIndex = 0;
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+            ConfigManager.ApplySettings(this);
+            stopwatch.Stop();
         }
 
         private void BtnSearch_Click(object sender, RoutedEventArgs e)

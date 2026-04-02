@@ -13,5 +13,10 @@ namespace ReestrObrashcheniy
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            ConfigManager.LoadConfig(); // Загружаем настройки перед открытием окон
+        }
     }
 }

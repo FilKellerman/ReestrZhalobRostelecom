@@ -13,11 +13,17 @@ namespace ReestrObrashcheniy
         {
             InitializeComponent();
             editID = id;
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+            ConfigManager.ApplySettings(this);  // ✅
+            if (id.HasValue) LoadДляРедактирования(id.Value);
 
             if (id.HasValue)
             {
                 LoadДляРедактирования(id.Value);
             }
+
+            stopwatch.Stop();
         }
 
         private void LoadДляРедактирования(int id)
@@ -36,6 +42,7 @@ namespace ReestrObrashcheniy
         {
             if (string.IsNullOrWhiteSpace(txtФИО.Text))
             {
+                Logger.Warning("UI", "Attempt to save client without FIO");
                 MessageBox.Show("Заполните ФИО!");
                 return;
             }
@@ -44,6 +51,7 @@ namespace ReestrObrashcheniy
             {
                 using (SqlConnection conn = DbHelper.GetConnection())
                 {
+
                     conn.Open();
                     string sql = editID.HasValue
                         ? "UPDATE Клиенты SET ФИО = @ФИО, Адрес = @Адрес, Телефон = @Телефон WHERE ID = @ID"
@@ -61,6 +69,8 @@ namespace ReestrObrashcheniy
                         cmd.ExecuteNonQuery();
                     }
                 }
+                string action = editID.HasValue ? "Updated record" : "Added record";
+                Logger.Audit(CurrentUser.Login, action, $"Table: Клиенты | ФИО: {txtФИО.Text}");
 
                 MessageBox.Show("Клиент сохранён!");
                 DialogResult = true;
@@ -68,12 +78,14 @@ namespace ReestrObrashcheniy
             }
             catch (Exception ex)
             {
+                Logger.Error("UI", "Error saving client", ex);
                 MessageBox.Show("Ошибка сохранения:\n" + ex.Message);
             }
         }
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
+            Logger.Info("UI", "Client edit window cancelled");
             DialogResult = false;
             Close();
         }
